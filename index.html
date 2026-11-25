@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ორნიშნა რიცხვების შეკრება — მე-2 კლასი</title>
+  <style>
+    :root {
+      --bg-top: #eef6ff;
+      --bg-bottom: #fff9ed;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #475569;
+      --tens-color: #2563eb;
+      --tens-light: #dbeafe;
+      --tens-border: #93c5fd;
+      --ones-color: #ea580c;
+      --ones-light: #ffedd5;
+      --ones-border: #fdba74;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --warn: #d97706;
+      --warn-bg: #fef3c7;
+      --error: #dc2626;
+      --error-bg: #fee2e2;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #0ea5e9;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --shadow-soft: 0 12px 32px rgba(30, 41, 59, 0.08);
+      --shadow-btn: 0 4px 0 rgba(0, 0, 0, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans Georgian", "BPG Arial", "Sylfaen", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 14px 40px;
+      line-height: 1.5;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 940px;
+    }
+
+    /* Top Header */
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 12px 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.28);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .brand-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      background: #f1f5f9;
+      border: 2px solid #e2e8f0;
+    }
+
+    .pill-badge.mistakes-ok {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }
+
+    .pill-badge.mistakes-warn {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+
+    .pill-badge.mistakes-over {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+
+    .icon-btn {
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--text-main);
+      border-radius: 12px;
+      padding: 7px 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: transform 0.12s ease, background 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      background: #f8fafc;
+      transform: translateY(-1px);
+    }
+
+    /* Main Card */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      border: 2px solid #e2e8f0;
+      padding: 26px 24px;
+      animation: fadeSlideIn 0.3s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Welcome Screen */
+    .welcome-hero {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 0.88rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .welcome-hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.45rem, 3vw, 2.05rem);
+      color: #0f172a;
+    }
+
+    .welcome-hero p {
+      margin: 0 auto;
+      max-width: 650px;
+      color: var(--text-muted);
+      font-size: 1.02rem;
+    }
+
+    .stages-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .stage-mini-card {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: left;
+    }
+
+    .stage-mini-card .num {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      text-align: center;
+      line-height: 26px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+    }
+
+    .stage-mini-card h3 {
+      margin: 0 0 4px;
+      font-size: 0.96rem;
+      color: #1e293b;
+    }
+
+    .stage-mini-card .ex {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--primary);
+      background: #eef2ff;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 22px;
+    }
+
+    .field-label {
+      display: block;
+      font-weight: 800;
+      font-size: 0.98rem;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 13px 16px;
+      font-size: 1.08rem;
+      font-family: inherit;
+      font-weight: 700;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.14);
+    }
+
+    .mode-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .mode-card {
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 13px 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .mode-card:hover {
+      border-color: #818cf8;
+    }
+
+    .mode-card.selected {
+      border-color: var(--primary);
+      background: #eef2ff;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .mode-card .mode-title {
+      font-weight: 800;
+      font-size: 0.96rem;
+      color: #1e293b;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-card .mode-desc {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .rule-note {
+      background: #fefce8;
+      border: 2px solid #fde047;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 0.94rem;
+      color: #713f12;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 26px;
+      font-size: 1.08rem;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #3730a3;
+      transition: transform 0.1s ease, filter 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.06);
+    }
+
+    .btn-primary:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #3730a3;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #1e293b;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 11px 18px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-success {
+      background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 13px 24px;
+      font-size: 1.04rem;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #15803d;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-success:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #15803d;
+    }
+
+    /* Progress Stepper */
+    .progress-section {
+      margin-bottom: 20px;
+    }
+
+    .stage-pills {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .stage-pill {
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 2px solid #e2e8f0;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .stage-pill.active {
+      background: #eef2ff;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .stage-pill.done {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+
+    .progress-track {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4f46e5, #0ea5e9, #22c55e);
+      border-radius: 999px;
+      transition: width 0.35s ease;
+      width: 0%;
+    }
+
+    .stage-header-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stage-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    /* Mini Lesson Banner */
+    .mini-lesson {
+      background: #f0f9ff;
+      border: 2px solid #bae6fd;
+      border-radius: 18px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .mini-lesson-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .mini-lesson h3 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+      color: #0c4a6e;
+    }
+
+    .mini-lesson p {
+      margin: 0;
+      font-size: 0.93rem;
+      color: #0369a1;
+    }
+
+    /* Problem Box */
+    .problem-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .equation-card {
+      background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+      border: 3px solid #cbd5e1;
+      border-radius: 22px;
+      padding: 22px 16px;
+      text-align: center;
+    }
+
+    .legend-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .legend-tens {
+      color: var(--tens-color);
+      background: var(--tens-light);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .legend-ones {
+      color: var(--ones-color);
+      background: var(--ones-light);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .equation-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: clamp(2.1rem, 5.5vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin: 8px 0 18px;
+    }
+
+    .digit-t {
+      color: var(--tens-color);
+    }
+
+    .digit-o {
+      color: var(--ones-color);
+    }
+
+    .answer-input-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .answer-box {
+      width: 118px;
+      height: 68px;
+      font-size: 2.3rem;
+      font-weight: 900;
+      text-align: center;
+      border: 3px solid var(--primary);
+      border-radius: 18px;
+      background: #eef2ff;
+      color: #1e1b4b;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .answer-box:focus {
+      background: #ffffff;
+      box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.18);
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* Kid-Friendly Keypad */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(44px, 60px));
+      justify-content: center;
+      gap: 8px;
+      margin: 14px auto 4px;
+    }
+
+    .key-btn {
+      height: 46px;
+      border-radius: 12px;
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 0 #cbd5e1;
+      transition: transform 0.08s ease, background 0.12s;
+    }
+
+    .key-btn:hover {
+      background: #f1f5f9;
+    }
+
+    .key-btn:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    .key-btn.key-clear {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+      font-size: 1rem;
+    }
+
+    /* Feedback Banner */
+    .feedback-box {
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      animation: fadeSlideIn 0.25s ease;
+    }
+
+    .feedback-box.success {
+      background: var(--success-bg);
+      border: 2px solid #86efac;
+      color: #14532d;
+    }
+
+    .feedback-box.encourage {
+      background: var(--warn-bg);
+      border: 2px solid #fcd34d;
+      color: #78350f;
+    }
+
+    /* Differentiated Help Panels */
+    .support-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .visual-aid-panel {
+      background: #f8fafc;
+      border: 2px dashed #94a3b8;
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .visual-aid-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .visual-aid-header h3 {
+      margin: 0;
+      font-size: 1.02rem;
+      color: #1e293b;
+    }
+
+    .blocks-stage {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .number-blocks-box {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 124px;
+    }
+
+    .number-blocks-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .blocks-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ten-rod {
+      width: 18px;
+      height: 82px;
+      border-radius: 5px;
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      border: 2px solid #1d4ed8;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1px 0;
+      box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
+      position: relative;
+    }
+
+    .ten-rod span {
+      display: block;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.45);
+      width: 100%;
+    }
+
+    .ten-rod.new-ten {
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      border-color: #047857;
+      animation: popIn 0.45s ease;
+    }
+
+    .ones-cluster {
+      display: grid;
+      grid-template-columns: repeat(2, 16px);
+      gap: 4px;
+      align-content: end;
+    }
+
+    .one-cube {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #fb923c, #ea580c);
+      border: 2px solid #c2410c;
+      box-shadow: 0 2px 4px rgba(234, 88, 12, 0.22);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      70% { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .plus-sign-mid {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #475569;
+      text-align: center;
+    }
+
+    .regroup-result-box {
+      margin-top: 14px;
+      background: #ecfdf5;
+      border: 2px solid #6ee7b7;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      animation: fadeSlideIn 0.3s ease;
+    }
+
+    .regroup-result-box p {
+      margin: 0 0 10px;
+      font-weight: 800;
+      color: #065f46;
+    }
+
+    /* Step-by-step Helper */
+    .step-helper-panel {
+      background: #fffbeb;
+      border: 2px solid #fcd34d;
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .step-helper-panel h3 {
+      margin: 0 0 10px;
+      font-size: 1.02rem;
+      color: #92400e;
+    }
+
+    .step-rows {
+      display: grid;
+      gap: 10px;
+    }
+
+    .step-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border: 2px solid #fde68a;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 0.98rem;
+    }
+
+    .step-mini-input {
+      width: 72px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      font-family: inherit;
+    }
+
+    .step-mini-input.correct {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #166534;
+    }
+
+    .step-mini-input.wrong {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+
+    .step-status {
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    /* Summary & Certificate */
+    .result-summary {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .result-emoji {
+      font-size: 3.4rem;
+      margin-bottom: 6px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 18px 0 24px;
+    }
+
+    .stat-tile {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-tile .val {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .stat-tile .lbl {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Printable Certificate */
+    .certificate-wrapper {
+      background: linear-gradient(135deg, #fffbeb 0%, #ffffff 50%, #eff6ff 100%);
+      border: 10px double #d97706;
+      border-radius: 22px;
+      padding: 34px 28px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 14px 36px rgba(180, 83, 9, 0.14);
+      margin-bottom: 20px;
+    }
+
+    .cert-corner {
+      position: absolute;
+      font-size: 1.6rem;
+    }
+    .cert-corner.tl { top: 14px; left: 16px; }
+    .cert-corner.tr { top: 14px; right: 16px; }
+    .cert-corner.bl { bottom: 14px; left: 16px; }
+    .cert-corner.br { bottom: 14px; right: 16px; }
+
+    .cert-ribbon {
+      display: inline-block;
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      color: #fff;
+      font-weight: 900;
+      padding: 6px 20px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .cert-title {
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      font-weight: 900;
+      color: #92400e;
+      margin: 4px 0 8px;
+    }
+
+    .cert-subtitle {
+      font-size: 1.02rem;
+      color: #475569;
+      margin: 0 0 16px;
+    }
+
+    .cert-student-name {
+      font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+      font-weight: 900;
+      color: #1e3a8a;
+      border-bottom: 3px dashed #93c5fd;
+      display: inline-block;
+      padding: 4px 26px 8px;
+      margin: 6px 0 16px;
+    }
+
+    .cert-body {
+      max-width: 620px;
+      margin: 0 auto 20px;
+      font-size: 1.02rem;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .cert-footer {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 2px solid #fde68a;
+      font-size: 0.92rem;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .cert-seal {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fde047 0%, #f59e0b 100%);
+      border: 4px dashed #b45309;
+      color: #78350f;
+      font-weight: 900;
+      font-size: 0.78rem;
+      line-height: 1.15;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+    }
+
+    @media (max-width: 680px) {
+      .blocks-stage {
+        grid-template-columns: 1fr;
+      }
+      .stage-pills {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .keypad {
+        grid-template-columns: repeat(4, minmax(48px, 68px));
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0;
+      }
+      .top-bar,
+      .no-print,
+      .result-summary,
+      .stats-grid {
+        display: none !important;
+      }
+      .card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .certificate-wrapper {
+        box-shadow: none !important;
+        margin: 12mm auto;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">+</div>
+        <div>
+          <p class="brand-title">ორნიშნა რიცხვების შეკრება</p>
+          <p class="brand-sub">მე-2 კლასის ინტერაქტიული გაკვეთილი</p>
+        </div>
+      </div>
+
+      <div class="top-controls">
+        <span id="mistakeBadge" class="pill-badge mistakes-ok hidden">
+          შეცდომები: <span id="mistakeCountText">0</span> / 3
+        </span>
+        <button id="soundToggleBtn" class="icon-btn" type="button" title="ხმის ჩართვა/გამორთვა">
+          🔊 ხმა: ჩართულია
+        </button>
+        <button id="restartTopBtn" class="icon-btn hidden" type="button">
+          🔄 თავიდან
+        </button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: WELCOME -->
+    <section id="welcomeScreen" class="card">
+      <div class="welcome-hero">
+        <span class="hero-badge">🌟 მე-2 კლასი • ნაბიჯ-ნაბიჯ სწავლება</span>
+        <h1>გამარჯობა, პატარა მათემატიკოსო!</h1>
+        <p>
+          დღეს ერთად ვისწავლით და გავივარჯიშებთ ორნიშნა რიცხვების შეკრებაში.
+          გზად 4 სახალისო საფეხურს გაივლი და შეგიძლია ნებისმიერ დროს გამოიყენო ფერადი ბლოკები და მინიშნებები!
+        </p>
+      </div>
+
+      <div class="stages-preview">
+        <div class="stage-mini-card">
+          <span class="num">1</span>
+          <h3>მრგვალი ათეულები</h3>
+          <p style="margin:0;font-size:0.85rem;color:#475569;">ათეულების შეკრება მარტივად</p>
+          <span class="ex">20 + 30</span>
+        </div>
+        <div class="stage-mini-card">
+          <span class="num">2</span>
+          <h3>გადასვლის გარეშე</h3>
+          <p style="margin:0;font-size:0.85rem;color:#475569;">ათეულები + ათეულები, ერთეულები + ერთეულები</p>
+          <span class="ex">23 + 43</span>
+        </div>
+        <div class="stage-mini-card">
+          <span class="num">3</span>
+          <h3>სრული ათეულის შექმნა</h3>
+          <p style="margin:0;font-size:0.85rem;color:#475569;">როცა 10 ერთეული 1 ათეულად იქცევა</p>
+          <span class="ex">36 + 24</span>
+        </div>
+        <div class="stage-mini-card">
+          <span class="num">4</span>
+          <h3>ათეულის გავლით</h3>
+          <p style="margin:0;font-size:0.85rem;color:#475569;">ერთეულების შეკრება ათეულზე გადასვლით</p>
+          <span class="ex">34 + 28</span>
+        </div>
+      </div>
+
+      <div class="setup-grid">
+        <div>
+          <label class="field-label" for="studentNameInput">1. ჩაწერე შენი სახელი (სერტიფიკატისთვის):</label>
+          <input
+            id="studentNameInput"
+            class="text-input"
+            type="text"
+            maxlength="40"
+            placeholder="მაგალითად: ნინო გიორგაძე"
+          />
+        </div>
+
+        <div>
+          <span class="field-label">2. აირჩიე, როგორ გირჩევნია მუშაობა (შეგიძლია შეცვალო გაკვეთილის დროსაც):</span>
+          <div class="mode-options" id="modeOptions">
+            <button type="button" class="mode-card selected" data-mode="guided">
+              <div class="mode-title">🧩 დამხმარე რეჟიმი</div>
+              <div class="mode-desc">ათეულის ჩხირები, ერთეულის კუბიკები და ნაბიჯ-ნაბიჯ მინიშნება ავტომატურად ჩანს.</div>
+            </button>
+            <button type="button" class="mode-card" data-mode="standard">
+              <div class="mode-title">✨ სტანდარტული რეჟიმი</div>
+              <div class="mode-desc">მაგალითს ხსნი დამოუკიდებლად, საჭიროებისას კი ერთი დაჭერით ჩართავ დახმარებას.</div>
+            </button>
+            <button type="button" class="mode-card" data-mode="challenge">
+              <div class="mode-title">🚀 დამოუკიდებელი რეჟიმი</div>
+              <div class="mode-desc">მოსწავლეებისთვის, ვინც თავდაჯერებულია — დახმარება დამალულია, მაგრამ ხელმისაწვდომია.</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-note">
+        <span>🏆</span>
+        <span>
+          <strong>სერტიფიკატის წესი:</strong> სულ 12 მაგალითია (თითო საფეხურზე 3). დავალების წარმატებით შესრულებისა და
+          <strong>მაქსიმუმ 3 შეცდომის</strong> დაშვების შემთხვევაში მიიღებ სახელობით სერტიფიკატს! მინიშნებების გამოყენება შეცდომად არ ითვლება.
+        </span>
+      </div>
+
+      <div style="text-align: center;">
+        <button id="startBtn" class="btn-primary" type="button">
+          დავიწყოთ თავგადასავალი! 🚀
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: PRACTICE / LESSON -->
+    <section id="practiceScreen" class="card hidden">
+      <div class="progress-section">
+        <div class="stage-pills" id="stagePills">
+          <div class="stage-pill" data-stage="1">1. მრგვალი ათეულები</div>
+          <div class="stage-pill" data-stage="2">2. გადასვლის გარეშე</div>
+          <div class="stage-pill" data-stage="3">3. სრული ათეული</div>
+          <div class="stage-pill" data-stage="4">4. ათეულის გავლით</div>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="stage-header-row">
+        <span id="stageTag" class="stage-tag">საფეხური 1 • მაგალითი 1 / 12</span>
+        <span id="studentGreeting" style="font-weight:700;color:#475569;font-size:0.95rem;"></span>
+      </div>
+
+      <!-- Mini-lesson guide for current stage -->
+      <div id="miniLessonBox" class="mini-lesson">
+        <div class="mini-lesson-icon">🦉</div>
+        <div>
+          <h3 id="miniLessonTitle">როგორ შევკრიბოთ მრგვალი ათეულები?</h3>
+          <p id="miniLessonText">ათეულებს მივუმატოთ ათეულები და ბოლოს მივუწეროთ 0.</p>
+        </div>
+      </div>
+
+      <div class="problem-workspace">
+        <!-- Equation & Input -->
+        <div class="equation-card">
+          <div class="legend-row">
+            <span class="legend-tens">■ ლურჯი = ათეულები</span>
+            <span class="legend-ones">■ ნარინჯისფერი = ერთეულები</span>
+          </div>
+
+          <div class="equation-display" id="equationDisplay" aria-live="polite"></div>
+
+          <div class="keypad" id="keypad" aria-label="ციფრების პანელი">
+            <button type="button" class="key-btn" data-key="1">1</button>
+            <button type="button" class="key-btn" data-key="2">2</button>
+            <button type="button" class="key-btn" data-key="3">3</button>
+            <button type="button" class="key-btn" data-key="4">4</button>
+            <button type="button" class="key-btn" data-key="5">5</button>
+            <button type="button" class="key-btn key-clear" data-key="back">⌫</button>
+            <button type="button" class="key-btn" data-key="6">6</button>
+            <button type="button" class="key-btn" data-key="7">7</button>
+            <button type="button" class="key-btn" data-key="8">8</button>
+            <button type="button" class="key-btn" data-key="9">9</button>
+            <button type="button" class="key-btn" data-key="0">0</button>
+            <button type="button" class="key-btn key-clear" data-key="clear">C</button>
+          </div>
+
+          <div class="action-row">
+            <button id="checkAnswerBtn" class="btn-primary" type="button">
+              შემოწმება ✓
+            </button>
+            <button id="nextProblemBtn" class="btn-success hidden" type="button">
+              შემდეგი მაგალითი ➜
+            </button>
+          </div>
+        </div>
+
+        <!-- Feedback Banner -->
+        <div id="feedbackBox" class="feedback-box hidden" role="status"></div>
+
+        <!-- Support Toolbar -->
+        <div class="support-toolbar">
+          <button id="toggleBlocksBtn" class="btn-secondary" type="button">
+            🧱 ვიზუალური ბლოკების ჩვენება
+          </button>
+          <button id="toggleStepsBtn" class="btn-secondary" type="button">
+            💡 ნაბიჯ-ნაბიჯ მინიშნება
+          </button>
+        </div>
+
+        <!-- Visual Aid Panel (Base-10 Blocks) -->
+        <div id="visualAidPanel" class="visual-aid-panel hidden">
+          <div class="visual-aid-header">
+            <h3>🧱 თვალსაჩინო ბლოკები — დაინახე ათეულები და ერთეულები</h3>
+            <button id="combineBlocksBtn" class="btn-secondary" type="button">
+              ✨ შევაერთოთ და დავთვალოთ
+            </button>
+          </div>
+
+          <div class="blocks-stage">
+            <div class="number-blocks-box">
+              <div id="blocksTitleA" class="number-blocks-title"></div>
+              <div id="blocksContainerA" class="blocks-container"></div>
+            </div>
+            <div class="plus-sign-mid">+</div>
+            <div class="number-blocks-box">
+              <div id="blocksTitleB" class="number-blocks-title"></div>
+              <div id="blocksContainerB" class="blocks-container"></div>
+            </div>
+          </div>
+
+          <div id="regroupResultBox" class="regroup-result-box hidden">
+            <p id="regroupMessage"></p>
+            <div id="regroupBlocksContainer" class="blocks-container"></div>
+          </div>
+        </div>
+
+        <!-- Step-by-step Scaffolding Panel -->
+        <div id="stepHelperPanel" class="step-helper-panel hidden">
+          <h3>💡 დახმარება ნაბიჯ-ნაბიჯ (აქ შეცდომა არ გეთვლება!)</h3>
+          <div id="stepRows" class="step-rows"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: RESULTS & CERTIFICATE -->
+    <section id="resultScreen" class="card hidden">
+      <div class="result-summary">
+        <div id="resultEmoji" class="result-emoji">🎉</div>
+        <h2 id="resultHeading" style="margin:0 0 8px;font-size:1.7rem;"></h2>
+        <p id="resultSubtext" style="margin:0 auto;max-width:600px;color:var(--text-muted);font-size:1.02rem;"></p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-tile">
+          <div id="statSolved" class="val">12 / 12</div>
+          <div class="lbl">შესრულებული მაგალითი</div>
+        </div>
+        <div class="stat-tile">
+          <div id="statMistakes" class="val">0 / 3</div>
+          <div class="lbl">დაშვებული შეცდომა</div>
+        </div>
+        <div class="stat-tile">
+          <div id="statHints" class="val">0</div>
+          <div class="lbl">გამოყენებული მინიშნება</div>
+        </div>
+      </div>
+
+      <!-- Certificate (Shown only if mistakes <= 3) -->
+      <div id="certificateSection" class="hidden">
+        <div class="certificate-wrapper" id="certificateCard">
+          <span class="cert-corner tl">⭐</span>
+          <span class="cert-corner tr">⭐</span>
+          <span class="cert-corner bl">🌟</span>
+          <span class="cert-corner br">🌟</span>
+
+          <div class="cert-ribbon">მე-2 კლასის მათემატიკა</div>
+          <h2 class="cert-title">სერტიფიკატი</h2>
+          <p class="cert-subtitle">გადაეცემა ნორჩ მათემატიკოსს</p>
+
+          <div id="certStudentName" class="cert-student-name">მოსწავლე</div>
+
+          <p class="cert-body" id="certBodyText"></p>
+
+          <div class="cert-footer">
+            <div>
+              <div>თარიღი</div>
+              <div id="certDate" style="color:#1e293b;margin-top:4px;"></div>
+            </div>
+            <div class="cert-seal">
+              <span>ყოჩაღ!</span>
+              <span>100%</span>
+              <span>შრომა</span>
+            </div>
+            <div>
+              <div>შედეგი</div>
+              <div id="certScoreBadge" style="color:#15803d;margin-top:4px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-row no-print">
+          <button id="downloadCertBtn" class="btn-success" type="button">
+            🖼️ სერტიფიკატის ჩამოტვირთვა (PNG)
+          </button>
+          <button id="printCertBtn" class="btn-secondary" type="button">
+            🖨️ ამობეჭდვა
+          </button>
+        </div>
+      </div>
+
+      <!-- Encouragement Retry Box (Shown if mistakes > 3) -->
+      <div id="retryEncourageBox" class="hidden" style="background:#fffbeb;border:2px solid #fcd34d;border-radius:18px;padding:18px;text-align:center;margin-bottom:18px;">
+        <p style="margin:0;font-weight:700;color:#78350f;font-size:1.02rem;">
+          🌱 არაუშავს! სწავლისას შეცდომები გვეხმარება უკეთ დავფიქრდეთ.
+          სერტიფიკატის მისაღებად საჭიროა მაქსიმუმ <strong>3 შეცდომა</strong>.
+          შეგიძლია ჩართო <strong>„დამხმარე რეჟიმი“</strong>, გამოიყენო ბლოკები და თავიდან სცადო — აუცილებლად გამოგივა!
+        </p>
+      </div>
+
+      <div class="action-row no-print" style="margin-top:18px;">
+        <button id="playAgainBtn" class="btn-primary" type="button">
+          🔄 ახალი მაგალითებით თავიდან ცდა
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      // ---------- Audio Synthesizer (No external files needed) ----------
+      const SoundFX = {
+        enabled: true,
+        ctx: null,
+        ensureCtx() {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+          }
+          if (this.ctx && this.ctx.state === "suspended") {
+            this.ctx.resume().catch(() => {});
+          }
+        },
+        playTone(freq, duration, type = "sine", delay = 0, vol = 0.12) {
+          if (!this.enabled) return;
+          try {
+            this.ensureCtx();
+            if (!this.ctx) return;
+            const now = this.ctx.currentTime + delay;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(vol, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + duration);
+          } catch (_) {}
+        },
+        correct() {
+          this.playTone(523.25, 0.12, "triangle", 0);
+          this.playTone(659.25, 0.14, "triangle", 0.09);
+          this.playTone(783.99, 0.22, "triangle", 0.18);
+        },
+        gentleTry() {
+          this.playTone(349.23, 0.16, "sine", 0, 0.09);
+          this.playTone(311.13, 0.2, "sine", 0.12, 0.08);
+        },
+        celebrate() {
+          [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
+            this.playTone(f, 0.25, "triangle", idx * 0.11, 0.13);
+          });
+        }
+      };
+
+      // ---------- Stage Definitions & Problem Generators ----------
+      const STAGE_INFO = {
+        1: {
+          title: "საფეხური 1: მრგვალი ათეულების შეკრება",
+          lessonTitle: "როგორ შევკრიბოთ მრგვალი ათეულები? (მაგ.: 20 + 30)",
+          lessonText: "დააკვირდი ლურჯ ათეულებს! შეკრიბე ათეულები ერთმანეთთან (2 ათეული + 3 ათეული = 5 ათეული) და მიიღებ 50-ს."
+        },
+        2: {
+          title: "საფეხური 2: ათეულები და ერთეულები გადასვლის გარეშე",
+          lessonTitle: "როგორ შევკრიბოთ გადასვლის გარეშე? (მაგ.: 23 + 43)",
+          lessonText: "ათეულებს მიუმატე ათეული (20 + 40 = 60), ერთეულებს მიუმატე ერთეული (3 + 3 = 6), შემდეგ კი გააერთიანე: 60 + 6 = 66."
+        },
+        3: {
+          title: "საფეხური 3: ერთეულების ჯამი ქმნის სრულ ათეულს",
+          lessonTitle: "რა ხდება, როცა ერთეულების ჯამი 10-ია? (მაგ.: 36 + 24)",
+          lessonText: "შეკრიბე ათეულები (30 + 20 = 50) და ერთეულები (6 + 4 = 10). 10 ერთეული 1 ახალ ათეულად იკვრება! 50 + 10 = 60."
+        },
+        4: {
+          title: "საფეხური 4: შეკრება ათეულის გავლით",
+          lessonTitle: "როგორ შევკრიბოთ ათეულის გავლით? (მაგ.: 34 + 28)",
+          lessonText: "შეკრიბე ათეულები (30 + 20 = 50), შემდეგ ერთეულები (4 + 8 = 12). 12 არის 1 ათეული და 2 ერთეული. სულ: 50 + 12 = 62!"
+        }
+      };
+
+      function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function generateProblems(includeStarterExamples = true) {
+        const list = [];
+        const usedKeys = new Set();
+
+        function addUnique(stage, a, b) {
+          const key = `${stage}:${a}+${b}`;
+          if (usedKeys.has(key)) return false;
+          usedKeys.add(key);
+          list.push({ stage, a, b, answer: a + b });
+          return true;
+        }
+
+        // Stage 1: Round tens (sum <= 90)
+        if (includeStarterExamples) addUnique(1, 20, 30);
+        while (list.filter(p => p.stage === 1).length < 3) {
+          const t1 = randInt(1, 7);
+          const t2 = randInt(1, 9 - t1);
+          addUnique(1, t1 * 10, t2 * 10);
+        }
+
+        // Stage 2: Tens and ones without regrouping (ones sum <= 9, tens sum <= 9)
+        if (includeStarterExamples) addUnique(2, 23, 43);
+        while (list.filter(p => p.stage === 2).length < 3) {
+          const t1 = randInt(1, 7);
+          const t2 = randInt(1, 9 - t1);
+          const o1 = randInt(1, 7);
+          const o2 = randInt(1, 9 - o1);
+          addUnique(2, t1 * 10 + o1, t2 * 10 + o2);
+        }
+
+        // Stage 3: Ones sum equals 10 (tens sum + 1 <= 9)
+        if (includeStarterExamples) addUnique(3, 36, 24);
+        while (list.filter(p => p.stage === 3).length < 3) {
+          const t1 = randInt(1, 6);
+          const t2 = randInt(1, 8 - t1);
+          const o1 = randInt(1, 9);
+          const o2 = 10 - o1;
+          addUnique(3, t1 * 10 + o1, t2 * 10 + o2);
+        }
+
+        // Stage 4: Bridging ten (ones sum >= 11, tens sum + 1 <= 9)
+        if (includeStarterExamples) addUnique(4, 34, 28);
+        while (list.filter(p => p.stage === 4).length < 3) {
+          const t1 = randInt(1, 6);
+          const t2 = randInt(1, 8 - t1);
+          const o1 = randInt(2, 9);
+          const o2 = randInt(11 - o1, 9);
+          addUnique(4, t1 * 10 + o1, t2 * 10 + o2);
+        }
+
+        return list;
+      }
+
+      // ---------- Positive Pedagogical Feedback Messages ----------
+      const PRAISE_MESSAGES = [
+        "ყოჩაღ! ზუსტი პასუხია! 🌟",
+        "შესანიშნავია! ძალიან კარგად იფიქრე! 🎉",
+        "ბრავო! ათეულები და ერთეულები სუპერად შეკრიბე! 👏",
+        "საოცარია! ასე გააგრძელე! ✨",
+        "ზუსტად ასეა! ნამდვილი მათემატიკოსი ხარ! 🏆"
+      ];
+
+      // ---------- Application State ----------
+      const state = {
+        studentName: "",
+        mode: "guided", // guided | standard | challenge
+        sessionCount: 0,
+        problems: [],
+        currentIndex: 0,
+        mistakes: 0,
+        hintsUsed: 0,
+        blocksVisible: true,
+        stepsVisible: true,
+        solvedCurrent: false,
+        lastWrongAttempt: null,
+        combinedVisual: false
+      };
+
+      // ---------- DOM Elements ----------
+      const welcomeScreen = document.getElementById("welcomeScreen");
+      const practiceScreen = document.getElementById("practiceScreen");
+      const resultScreen = document.getElementById("resultScreen");
+
+      const studentNameInput = document.getElementById("studentNameInput");
+      const modeOptions = document.getElementById("modeOptions");
+      const startBtn = document.getElementById("startBtn");
+      const restartTopBtn = document.getElementById("restartTopBtn");
+      const soundToggleBtn = document.getElementById("soundToggleBtn");
+
+      const mistakeBadge = document.getElementById("mistakeBadge");
+      const mistakeCountText = document.getElementById("mistakeCountText");
+
+      const stagePills = document.getElementById("stagePills");
+      const progressFill = document.getElementById("progressFill");
+      const stageTag = document.getElementById("stageTag");
+      const studentGreeting = document.getElementById("studentGreeting");
+
+      const miniLessonTitle = document.getElementById("miniLessonTitle");
+      const miniLessonText = document.getElementById("miniLessonText");
+
+      const equationDisplay = document.getElementById("equationDisplay");
+      const keypad = document.getElementById("keypad");
+      const checkAnswerBtn = document.getElementById("checkAnswerBtn");
+      const nextProblemBtn = document.getElementById("nextProblemBtn");
+      const feedbackBox = document.getElementById("feedbackBox");
+
+      const toggleBlocksBtn = document.getElementById("toggleBlocksBtn");
+      const toggleStepsBtn = document.getElementById("toggleStepsBtn");
+      const visualAidPanel = document.getElementById("visualAidPanel");
+      const combineBlocksBtn = document.getElementById("combineBlocksBtn");
+      const blocksTitleA = document.getElementById("blocksTitleA");
+      const blocksTitleB = document.getElementById("blocksTitleB");
+      const blocksContainerA = document.getElementById("blocksContainerA");
+      const blocksContainerB = document.getElementById("blocksContainerB");
+      const regroupResultBox = document.getElementById("regroupResultBox");
+      const regroupMessage = document.getElementById("regroupMessage");
+      const regroupBlocksContainer = document.getElementById("regroupBlocksContainer");
+
+      const stepHelperPanel = document.getElementById("stepHelperPanel");
+      const stepRows = document.getElementById("stepRows");
+
+      const resultEmoji = document.getElementById("resultEmoji");
+      const resultHeading = document.getElementById("resultHeading");
+      const resultSubtext = document.getElementById("resultSubtext");
+      const statSolved = document.getElementById("statSolved");
+      const statMistakes = document.getElementById("statMistakes");
+      const statHints = document.getElementById("statHints");
+      const certificateSection = document.getElementById("certificateSection");
+      const retryEncourageBox = document.getElementById("retryEncourageBox");
+      const certStudentName = document.getElementById("certStudentName");
+      const certBodyText = document.getElementById("certBodyText");
+      const certDate = document.getElementById("certDate");
+      const certScoreBadge = document.getElementById("certScoreBadge");
+      const downloadCertBtn = document.getElementById("downloadCertBtn");
+      const printCertBtn = document.getElementById("printCertBtn");
+      const playAgainBtn = document.getElementById("playAgainBtn");
+
+      let answerInputEl = null;
+
+      // ---------- UI Helpers ----------
+      function formatColoredNumber(num) {
+        const t = Math.floor(num / 10);
+        const o = num % 10;
+        return `<span class="digit-t">${t}</span><span class="digit-o">${o}</span>`;
+      }
+
+      function createTenRod(isNew = false) {
+        const rod = document.createElement("div");
+        rod.className = isNew ? "ten-rod new-ten" : "ten-rod";
+        rod.title = "1 ათეული (10)";
+        for (let i = 0; i < 9; i++) {
+          rod.appendChild(document.createElement("span"));
+        }
+        return rod;
+      }
+
+      function renderBlocksInto(container, num) {
+        container.innerHTML = "";
+        const tens = Math.floor(num / 10);
+        const ones = num % 10;
+
+        for (let i = 0; i < tens; i++) {
+          container.appendChild(createTenRod(false));
+        }
+
+        if (ones > 0) {
+          const cluster = document.createElement("div");
+          cluster.className = "ones-cluster";
+          for (let i = 0; i < ones; i++) {
+            const cube = document.createElement("div");
+            cube.className = "one-cube";
+            cube.title = "1 ერთეული";
+            cluster.appendChild(cube);
+          }
+          container.appendChild(cluster);
+        }
+      }
+
+      function updateMistakeBadge() {
+        mistakeCountText.textContent = String(state.mistakes);
+        mistakeBadge.classList.remove("mistakes-ok", "mistakes-warn", "mistakes-over");
+        if (state.mistakes <= 1) {
+          mistakeBadge.classList.add("mistakes-ok");
+        } else if (state.mistakes <= 3) {
+          mistakeBadge.classList.add("mistakes-warn");
+        } else {
+          mistakeBadge.classList.add("mistakes-over");
+        }
+      }
+
+      function updateSupportVisibility() {
+        visualAidPanel.classList.toggle("hidden", !state.blocksVisible);
+        stepHelperPanel.classList.toggle("hidden", !state.stepsVisible);
+        toggleBlocksBtn.textContent = state.blocksVisible
+          ? "🧱 ბლოკების დამალვა"
+          : "🧱 ვიზუალური ბლოკების ჩვენება";
+        toggleStepsBtn.textContent = state.stepsVisible
+          ? "💡 მინიშნების დამალვა"
+          : "💡 ნაბიჯ-ნაბიჯ მინიშნება";
+      }
+
+      function renderStepHelper(problem) {
+        stepRows.innerHTML = "";
+        const t1 = Math.floor(problem.a / 10) * 10;
+        const o1 = problem.a % 10;
+        const t2 = Math.floor(problem.b / 10) * 10;
+        const o2 = problem.b % 10;
+
+        const steps = [];
+        if (problem.stage === 1) {
+          const sumTensCount = Math.floor(problem.a / 10) + Math.floor(problem.b / 10);
+          steps.push({
+            html: `1️⃣ დათვალე ათეულები: <span class="digit-t">${Math.floor(problem.a / 10)}</span> ათეული + <span class="digit-t">${Math.floor(problem.b / 10)}</span> ათეული =`,
+            expected: sumTensCount,
+            suffix: "ათეული"
+          });
+          steps.push({
+            html: `2️⃣ ${sumTensCount} ათეული არის:`,
+            expected: problem.answer,
+            suffix: ""
+          });
+        } else {
+          steps.push({
+            html: `1️⃣ ჯერ შეკრიბე ათეულები: <span class="digit-t">${t1}</span> + <span class="digit-t">${t2}</span> =`,
+            expected: t1 + t2,
+            suffix: ""
+          });
+          let onesNote = "";
+          if (problem.stage === 3) onesNote = "(1 ახალი ათეული!)";
+          if (problem.stage === 4) onesNote = `(1 ათეული და ${o1 + o2 - 10} ერთეული!)`;
+
+          steps.push({
+            html: `2️⃣ ახლა შეკრიბე ერთეულები: <span class="digit-o">${o1}</span> + <span class="digit-o">${o2}</span> =`,
+            expected: o1 + o2,
+            suffix: onesNote
+          });
+          steps.push({
+            html: `3️⃣ გააერთიანე ორივე ჯამი: ${t1 + t2} + ${o1 + o2} =`,
+            expected: problem.answer,
+            suffix: ""
+          });
+        }
+
+        steps.forEach((step) => {
+          const row = document.createElement("div");
+          row.className = "step-row";
+
+          const labelSpan = document.createElement("span");
+          labelSpan.innerHTML = step.html;
+
+          const miniInput = document.createElement("input");
+          miniInput.type = "text";
+          miniInput.inputMode = "numeric";
+          miniInput.maxLength = 3;
+          miniInput.className = "step-mini-input";
+          miniInput.placeholder = "?";
+
+          const suffixSpan = document.createElement("span");
+          suffixSpan.textContent = step.suffix;
+          suffixSpan.style.color = "#64748b";
+          suffixSpan.style.fontSize = "0.9rem";
+
+          const statusSpan = document.createElement("span");
+          statusSpan.className = "step-status";
+
+          miniInput.addEventListener("input", () => {
+            const clean = miniInput.value.replace(/[^0-9]/g, "");
+            miniInput.value = clean;
+            miniInput.classList.remove("correct", "wrong");
+            statusSpan.textContent = "";
+            if (clean === "") return;
+            const val = Number(clean);
+            if (val === step.expected) {
+              miniInput.classList.add("correct");
+              statusSpan.textContent = "✓ სწორია!";
+              statusSpan.style.color = "#15803d";
+            } else if (clean.length >= String(step.expected).length) {
+              miniInput.classList.add("wrong");
+              statusSpan.textContent = "კიდევ სცადე";
+              statusSpan.style.color = "#b91c1c";
+            }
+          });
+
+          row.appendChild(labelSpan);
+          row.appendChild(miniInput);
+          if (step.suffix) row.appendChild(suffixSpan);
+          row.appendChild(statusSpan);
+          stepRows.appendChild(row);
+        });
+      }
+
+      function renderCombinedBlocks(problem) {
+        const t1 = Math.floor(problem.a / 10);
+        const o1 = problem.a % 10;
+        const t2 = Math.floor(problem.b / 10);
+        const o2 = problem.b % 10;
+        const totalOnes = o1 + o2;
+        const extraTen = Math.floor(totalOnes / 10);
+        const remOnes = totalOnes % 10;
+
+        regroupBlocksContainer.innerHTML = "";
+        for (let i = 0; i < t1 + t2; i++) {
+          regroupBlocksContainer.appendChild(createTenRod(false));
+        }
+        for (let i = 0; i < extraTen; i++) {
+          regroupBlocksContainer.appendChild(createTenRod(true));
+        }
+        if (remOnes > 0) {
+          const cluster = document.createElement("div");
+          cluster.className = "ones-cluster";
+          for (let i = 0; i < remOnes; i++) {
+            const cube = document.createElement("div");
+            cube.className = "one-cube";
+            cluster.appendChild(cube);
+          }
+          regroupBlocksContainer.appendChild(cluster);
+        }
+
+        if (extraTen > 0) {
+          regroupMessage.textContent =
+            `✨ ${o1} + ${o2} = ${totalOnes} ერთეული! 10 ერთეული შეიკრა 1 მწვანე ათეულად! სულ გვაქვს ${t1 + t2 + extraTen} ათეული და ${remOnes} ერთეული = ${problem.answer}.`;
+        } else {
+          regroupMessage.textContent =
+            `✨ ერთად გვაქვს ${t1 + t2} ათეული და ${remOnes} ერთეული — სულ ${problem.answer}!`;
+        }
+        regroupResultBox.classList.remove("hidden");
+      }
+
+      // ---------- Render Current Problem ----------
+      function loadCurrentProblem() {
+        const problem = state.problems[state.currentIndex];
+        const info = STAGE_INFO[problem.stage];
+
+        state.solvedCurrent = false;
+        state.lastWrongAttempt = null;
+        state.combinedVisual = false;
+
+        // Progress & Stage Pills
+        const pills = stagePills.querySelectorAll(".stage-pill");
+        pills.forEach((pill) => {
+          const s = Number(pill.dataset.stage);
+          pill.classList.remove("active", "done");
+          if (s < problem.stage) pill.classList.add("done");
+          else if (s === problem.stage) pill.classList.add("active");
+        });
+
+        const pct = Math.round((state.currentIndex / state.problems.length) * 100);
+        progressFill.style.width = `${pct}%`;
+
+        stageTag.textContent = `${info.title} • მაგალითი ${state.currentIndex + 1} / ${state.problems.length}`;
+        studentGreeting.textContent = `მოსწავლე: ${state.studentName}`;
+
+        miniLessonTitle.textContent = info.lessonTitle;
+        miniLessonText.textContent = info.lessonText;
+
+        // Equation
+        equationDisplay.innerHTML = `
+          <span>${formatColoredNumber(problem.a)}</span>
+          <span>+</span>
+          <span>${formatColoredNumber(problem.b)}</span>
+          <span>=</span>
+          <span class="answer-input-wrap">
+            <input id="answerBox" class="answer-box" type="text" inputmode="numeric" maxlength="3" placeholder="?" autocomplete="off" />
+          </span>
+        `;
+        answerInputEl = document.getElementById("answerBox");
+        answerInputEl.addEventListener("input", () => {
+          answerInputEl.value = answerInputEl.value.replace(/[^0-9]/g, "");
+        });
+        answerInputEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            if (state.solvedCurrent) {
+              goToNextProblem();
+            } else {
+              checkAnswer();
+            }
+          }
+        });
+        answerInputEl.focus();
+
+        // Reset buttons & feedback
+        feedbackBox.classList.add("hidden");
+        feedbackBox.className = "feedback-box hidden";
+        checkAnswerBtn.classList.remove("hidden");
+        nextProblemBtn.classList.add("hidden");
+
+        // Visual Blocks
+        const t1 = Math.floor(problem.a / 10);
+        const o1 = problem.a % 10;
+        const t2 = Math.floor(problem.b / 10);
+        const o2 = problem.b % 10;
+        blocksTitleA.innerHTML = `${formatColoredNumber(problem.a)} (${t1} ათეული, ${o1} ერთეული)`;
+        blocksTitleB.innerHTML = `${formatColoredNumber(problem.b)} (${t2} ათეული, ${o2} ერთეული)`;
+        renderBlocksInto(blocksContainerA, problem.a);
+        renderBlocksInto(blocksContainerB, problem.b);
+        regroupResultBox.classList.add("hidden");
+
+        // Step Helper
+        renderStepHelper(problem);
+
+        // Apply Mode Defaults
+        if (state.mode === "guided") {
+          state.blocksVisible = true;
+          state.stepsVisible = true;
+        } else {
+          state.blocksVisible = false;
+          state.stepsVisible = false;
+        }
+        updateSupportVisibility();
+      }
+
+      // ---------- Check Answer ----------
+      function showFeedback(type, message) {
+        feedbackBox.className = `feedback-box ${type}`;
+        feedbackBox.textContent = message;
+        feedbackBox.classList.remove("hidden");
+      }
+
+      function checkAnswer() {
+        if (state.solvedCurrent || !answerInputEl) return;
+        const raw = answerInputEl.value.trim();
+        if (!raw) {
+          showFeedback("encourage", "ჯერ ჩაწერე პასუხი ცარიელ უჯრაში 😊");
+          answerInputEl.focus();
+          return;
+        }
+
+        const userAnswer = Number(raw);
+        const problem = state.problems[state.currentIndex];
+
+        if (userAnswer === problem.answer) {
+          state.solvedCurrent = true;
+          SoundFX.correct();
+          const praise = PRAISE_MESSAGES[Math.floor(Math.random() * PRAISE_MESSAGES.length)];
+          showFeedback("success", `${praise} (${problem.a} + ${problem.b} = ${problem.answer})`);
+          answerInputEl.disabled = true;
+          checkAnswerBtn.classList.add("hidden");
+          nextProblemBtn.textContent =
+            state.currentIndex === state.problems.length - 1
+              ? "შედეგების ნახვა 🏆"
+              : "შემდეგი მაგალითი ➜";
+          nextProblemBtn.classList.remove("hidden");
+          nextProblemBtn.focus();
+
+          if (state.currentIndex === state.problems.length - 1) {
+            progressFill.style.width = "100%";
+          }
+        } else {
+          SoundFX.gentleTry();
+          if (state.lastWrongAttempt !== userAnswer) {
+            state.mistakes += 1;
+            state.lastWrongAttempt = userAnswer;
+            updateMistakeBadge();
+          }
+
+          // Helpful, tailored pedagogical hint based on the stage!
+          let gentleHint = "თითქმის გამოვიდა! სცადე ვიზუალური ბლოკებით ან ნაბიჯ-ნაბიჯ მინიშნებით.";
+          if (problem.stage === 1) {
+            gentleHint = `შეამოწმე ათეულები: ${Math.floor(problem.a / 10)} ათეულს + ${Math.floor(problem.b / 10)} ათეული. დახმარებისთვის ჩაგირთე ბლოკები!`;
+          } else if (problem.stage === 2) {
+            gentleHint = `ჯერ ათეულები შეკრიბე (${Math.floor(problem.a / 10) * 10} + ${Math.floor(problem.b / 10) * 10}), მერე ერთეულები (${problem.a % 10} + ${problem.b % 10}).`;
+          } else if (problem.stage === 3) {
+            gentleHint = `ნახე, ${problem.a % 10} + ${problem.b % 10} = 10 ერთეულია, ანუ 1 ახალი ათეული! სცადე „შევაერთოთ და დავთვალოთ“ ღილაკი.`;
+          } else if (problem.stage === 4) {
+            gentleHint = `დააკვირდი ერთეულებს: ${problem.a % 10} + ${problem.b % 10} = ${(problem.a % 10) + (problem.b % 10)}, აქედან 10 ერთეული ახალ ათეულად იქცევა!`;
+          }
+
+          showFeedback("encourage", `💛 ${gentleHint}`);
+
+          // Auto-open supportive scaffolding when a child struggles!
+          if (!state.blocksVisible) {
+            state.blocksVisible = true;
+          }
+          if (!state.stepsVisible) {
+            state.stepsVisible = true;
+          }
+          updateSupportVisibility();
+          answerInputEl.select();
+        }
+      }
+
+      function goToNextProblem() {
+        if (state.currentIndex < state.problems.length - 1) {
+          state.currentIndex += 1;
+          loadCurrentProblem();
+        } else {
+          showResults();
+        }
+      }
+
+      // ---------- Results & Certificate ----------
+      function showResults() {
+        practiceScreen.classList.add("hidden");
+        resultScreen.classList.remove("hidden");
+
+        const passed = state.mistakes <= 3;
+        statSolved.textContent = `${state.problems.length} / ${state.problems.length}`;
+        statMistakes.textContent = `${state.mistakes} / 3`;
+        statHints.textContent = String(state.hintsUsed);
+
+        if (passed) {
+          SoundFX.celebrate();
+          resultEmoji.textContent = "🏆🎉";
+          resultHeading.textContent = `ბრავო, ${state.studentName}! შენ მოიპოვე სერტიფიკატი!`;
+          resultSubtext.textContent =
+            "ყველა საფეხური წარმატებით გაიარე და შესანიშნავად გაართვი თავი ორნიშნა რიცხვების შეკრებას!";
+
+          certificateSection.classList.remove("hidden");
+          retryEncourageBox.classList.add("hidden");
+
+          certStudentName.textContent = state.studentName;
+          certBodyText.textContent =
+            "წარმატებით დაძლია ორნიშნა რიცხვების შეკრების ოთხივე სასწავლო საფეხური: მრგვალი ათეულები, გადასვლის გარეშე შეკრება, სრული ათეულის შექმნა და ათეულის გავლით შეკრება.";
+
+          const today = new Date();
+          const dateStr = `${String(today.getDate()).padStart(2, "0")}.${String(today.getMonth() + 1).padStart(2, "0")}.${today.getFullYear()}`;
+          certDate.textContent = dateStr;
+          certScoreBadge.textContent =
+            state.mistakes === 0
+              ? "უმაღლესი (0 შეცდომა)"
+              : `წარმატებული (${state.mistakes} შეცდომა)`;
+        } else {
+          resultEmoji.textContent = "🌟💪";
+          resultHeading.textContent = `ძალიან კარგად იშრომე, ${state.studentName}!`;
+          resultSubtext.textContent =
+            `შენ ყველა მაგალითი დაასრულე! ამჯერად ${state.mistakes} შეცდომა დაგიგროვდა, სერტიფიკატისთვის კი მაქსიმუმ 3 შეცდომაა დასაშვები.`;
+          certificateSection.classList.add("hidden");
+          retryEncourageBox.classList.remove("hidden");
+        }
+      }
+
+      function downloadCertificatePNG() {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1200;
+        canvas.height = 820;
+        const ctx = canvas.getContext("2d");
+
+        // Background gradient
+        const grad = ctx.createLinearGradient(0, 0, 1200, 820);
+        grad.addColorStop(0, "#fffbeb");
+        grad.addColorStop(0.5, "#ffffff");
+        grad.addColorStop(1, "#eff6ff");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 1200, 820);
+
+        // Outer & inner borders
+        ctx.strokeStyle = "#d97706";
+        ctx.lineWidth = 14;
+        ctx.strokeRect(28, 28, 1144, 764);
+
+        ctx.strokeStyle = "#f59e0b";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(48, 48, 1104, 724);
+
+        // Ribbon
+        ctx.fillStyle = "#d97706";
+        const rx = 410, ry = 95, rw = 380, rh = 46, rr = 23;
+        ctx.beginPath();
+        ctx.moveTo(rx + rr, ry);
+        ctx.lineTo(rx + rw - rr, ry);
+        ctx.quadraticCurveTo(rx + rw, ry, rx + rw, ry + rr);
+        ctx.lineTo(rx + rw, ry + rh - rr);
+        ctx.quadraticCurveTo(rx + rw, ry + rh, rx + rw - rr, ry + rh);
+        ctx.lineTo(rx + rr, ry + rh);
+        ctx.quadraticCurveTo(rx, ry + rh, rx, ry + rh - rr);
+        ctx.lineTo(rx, ry + rr);
+        ctx.quadraticCurveTo(rx, ry, rx + rr, ry);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 22px 'Noto Sans Georgian', 'Segoe UI', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("მე-2 კლასის მათემატიკა", 600, 126);
+
+        // Title
+        ctx.fillStyle = "#92400e";
+        ctx.font = "bold 62px 'Noto Sans Georgian', 'Segoe UI', sans-serif";
+        ctx.fillText("სერტიფიკატი", 600, 218);
+
+        ctx.fillStyle = "#475569";
+        ctx.font = "600 24px 'Noto Sans Georgian', 'Segoe UI', sans-serif";
+        ctx.fillText("გადაეცემა ნორჩ მათემატიკოსს", 600, 268);
+
+        // Student Name
+        ctx.fillStyle = "#1e3a8a";
+        ctx.font = "bold 50px 'Noto Sans Georgian', 'Segoe UI', sans-serif";
+        ctx.fillText(state.studentName, 600, 355);
+
+        ctx.strokeStyle = "#93c5fd";
+        ctx.lineWidth = 3;
+        ctx.setLineDash([10, 8]);
+        ctx.beginPath();
+        ctx.moveTo(300, 376);
+        ctx.lineTo(900, 376);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Body text (wrapped manually for clean layout)
+        ctx.fillStyle = "#334155";
+        ctx.font = "600 24px 'Noto Sans Georgian', 'Segoe UI', sans-serif";
+        const lines = [
+          "წარმატებით დაძლია ორნიშნა რიცხვების შეკრების ოთხივე საფეხური:",
+          "მრგვალი ათეულები, გადასვლის გარეშე შეკრება,",
+          "სრული ათეულის შექმნა და ათეულის გავლით შეკრება."
+        ];
+        lines.forEach((line, i) => {
+          ctx.fillText(line, 600, 446 + i * 38);
+        });
+
+        // Seal
+        ctx.fillStyle = "#fbbf24";
+        ctx.beginPath();
+        ctx.arc(600, 650, 62, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#b45309";
+        ctx.lineWidth = 4;
+        ctx.setLineDash([8, 6]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = "#78350f";
+        ctx.font = "bold 20px 'Noto Sans Georgian', 'Segoe UI', sans-serif";
+        ctx.fillText("ყოჩაღ!", 600, 642);
+        ctx.fillText("100%", 600, 670);
+
+        // Footer metadata
+        ctx.fillStyle = "#475569";
+        ctx.font = "bold 21px 'Noto Sans Georgian', 'Segoe UI', sans-serif";
+        ctx.fillText(`თარიღი: ${certDate.textContent}`, 260, 655);
+        ctx.fillStyle = "#15803d";
+        ctx.fillText(certScoreBadge.textContent, 930, 655);
+
+        const link = document.createElement("a");
+        link.download = `sertifikati-${state.studentName.replace(/\s+/g, "_")}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
+      // ---------- Start / Restart Flow ----------
+      function startSession() {
+        const nameVal = studentNameInput.value.trim();
+        state.studentName = nameVal || "ნორჩი მათემატიკოსი";
+        state.problems = generateProblems(state.sessionCount === 0);
+        state.sessionCount += 1;
+        state.currentIndex = 0;
+        state.mistakes = 0;
+        state.hintsUsed = 0;
+        updateMistakeBadge();
+
+        welcomeScreen.classList.add("hidden");
+        resultScreen.classList.add("hidden");
+        practiceScreen.classList.remove("hidden");
+        mistakeBadge.classList.remove("hidden");
+        restartTopBtn.classList.remove("hidden");
+
+        loadCurrentProblem();
+      }
+
+      function returnToWelcome() {
+        practiceScreen.classList.add("hidden");
+        resultScreen.classList.add("hidden");
+        welcomeScreen.classList.remove("hidden");
+        mistakeBadge.classList.add("hidden");
+        restartTopBtn.classList.add("hidden");
+      }
+
+      // ---------- Event Listeners ----------
+      modeOptions.addEventListener("click", (e) => {
+        const card = e.target.closest(".mode-card");
+        if (!card) return;
+        modeOptions.querySelectorAll(".mode-card").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        state.mode = card.dataset.mode;
+      });
+
+      startBtn.addEventListener("click", startSession);
+      studentNameInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") startSession();
+      });
+
+      restartTopBtn.addEventListener("click", returnToWelcome);
+      playAgainBtn.addEventListener("click", returnToWelcome);
+
+      soundToggleBtn.addEventListener("click", () => {
+        SoundFX.enabled = !SoundFX.enabled;
+        soundToggleBtn.textContent = SoundFX.enabled ? "🔊 ხმა: ჩართულია" : "🔇 ხმა: გამორთულია";
+      });
+
+      keypad.addEventListener("click", (e) => {
+        const btn = e.target.closest(".key-btn");
+        if (!btn || !answerInputEl || state.solvedCurrent) return;
+        const key = btn.dataset.key;
+        if (key === "clear") {
+          answerInputEl.value = "";
+        } else if (key === "back") {
+          answerInputEl.value = answerInputEl.value.slice(0, -1);
+        } else if (answerInputEl.value.length < 3) {
+          answerInputEl.value += key;
+        }
+        answerInputEl.focus();
+      });
+
+      checkAnswerBtn.addEventListener("click", checkAnswer);
+      nextProblemBtn.addEventListener("click", goToNextProblem);
+
+      toggleBlocksBtn.addEventListener("click", () => {
+        state.blocksVisible = !state.blocksVisible;
+        if (state.blocksVisible) state.hintsUsed += 1;
+        updateSupportVisibility();
+      });
+
+      toggleStepsBtn.addEventListener("click", () => {
+        state.stepsVisible = !state.stepsVisible;
+        if (state.stepsVisible) state.hintsUsed += 1;
+        updateSupportVisibility();
+      });
+
+      combineBlocksBtn.addEventListener("click", () => {
+        const problem = state.problems[state.currentIndex];
+        renderCombinedBlocks(problem);
+        if (!state.combinedVisual) {
+          state.combinedVisual = true;
+          state.hintsUsed += 1;
+        }
+      });
+
+      downloadCertBtn.addEventListener("click", downloadCertificatePNG);
+      printCertBtn.addEventListener("click", () => window.print());
+    })();
+  </script>
+</body>
+</html>
